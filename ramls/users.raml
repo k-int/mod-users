@@ -10,6 +10,8 @@ documentation:
 schemas:
   - userdata: !include ../schemas/userdata.json
   - userdataCollection: !include ../schemas/userdataCollection.json
+  - userdataMultiple: !include ../schemas/userdataMultiple.json
+  - userdataMultipleSummary: !include ../schemas/userdataMultipleSummary.json
 
 traits:
   - secured: !include https://raw.githubusercontent.com/folio-org/raml/master/traits/auth.raml
@@ -47,3 +49,20 @@ resourceTypes:
         schema: userdata
     get:
       description: Get a single user
+  /multi:
+    post:
+      description: Upload several <<resourcePathName|!singularize>> items.
+      body:
+          application/json:
+            schema: userdataMultiple
+      responses:
+        201:
+          body:
+            application/json:
+              schema: userdataMultipleSummary
+        400:
+          body:
+            text/plain:
+        500:
+          body:
+            text/plain:
