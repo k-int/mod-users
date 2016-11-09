@@ -1,6 +1,7 @@
 package org.folio.rest.impl;
 
 import io.vertx.core.AsyncResult;
+import io.vertx.core.CompositeFuture;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -24,6 +25,8 @@ import org.folio.rest.tools.messages.MessageConsts;
 import org.folio.rest.tools.utils.OutStream;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+import java.util.ArrayList;
+import org.folio.rest.jaxrs.model.UserdataMultipleSummary;
 
 
 
@@ -262,5 +265,54 @@ public class UsersAPI implements UsersResource {
                       messages.getMessage(lang, MessageConsts.InternalServerError))));
     }
   } 
+
+  @Override
+  public void postUsersMulti(List<User> entity, Map<String, String> okapiHeaders,
+          Handler<AsyncResult<Response>> asyncResultHandler,
+          Context vertxContext) throws Exception {
+    try {
+      vertxContext.runOnContext( v -> {
+        List<String> idList = new ArrayList<>();
+        List<String> nameList = new ArrayList<>();
+        List<Future> futureList = new ArrayList<>();
+        for(User user : entity) {
+          Future<UserdataMultipleSummary> future = Future.future();
+          UserdataMultipleSummary ums = new UserdataMultipleSummary();
+          ums.setId(user.getId());
+          ums.setUsername(user.getUsername());
+          if(idList.contains(user.getId()) || nameList.contains(user.getUsername())) {
+            ums.setSuccessful(false);
+            ums.setMessage("Duplicate username or id");
+            future.complete(ums);
+          } else {
+            nameList.add(user.getUsername());
+            idList.add(user.getId());
+            try {
+              MongoCRUD.getInstance(vertxContext.owner()).save(USER_COLLECTION,
+                        entity, reply -> {
+             ums.setSuccessful(true);
+             future.complete(ums);
+             });
+            } catch(Exception e) {
+                ums.setSuccessful(false);
+                ums.setMessage(e.getMessage());
+            }
+          }
+          futureList.add(future);
+        }
+        CompositeFuture compFut = CompositeFuture.all(futureList);
+        compFut.setHandler(res -> {
+          if(res.succeeded()) {
+            asyncResultHandler.handle(Future.succeededFuture(
+                    PostUsersMultiResponse.withJsonCreated(compFut.list())));
+          } else {
+            
+          }
+        });        
+      });
+    } catch(Exception e) {
+      
+    }
+  }
 }
 
