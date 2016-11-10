@@ -266,10 +266,12 @@ public class UsersAPI implements UsersResource {
     }
   } 
 
+  @Validate
   @Override
-  public void postUsersMulti(List<User> entity, Map<String, String> okapiHeaders,
-          Handler<AsyncResult<Response>> asyncResultHandler,
-          Context vertxContext) throws Exception {
+  public void postUsersMulti(String lang, List<User> entity,
+          Map<String, String> okapiHeaders, 
+          Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext)
+          throws Exception {
     try {
       vertxContext.runOnContext( v -> {
         List<String> idList = new ArrayList<>();
@@ -306,12 +308,17 @@ public class UsersAPI implements UsersResource {
             asyncResultHandler.handle(Future.succeededFuture(
                     PostUsersMultiResponse.withJsonCreated(compFut.list())));
           } else {
-            
+            asyncResultHandler.handle(Future.succeededFuture(
+                    PostUsersMultiResponse.withPlainInternalServerError(
+                            messages.getMessage(
+                                    lang, MessageConsts.InternalServerError))));
           }
         });        
       });
     } catch(Exception e) {
-      
+      asyncResultHandler.handle(Future.succeededFuture(
+              PostUsersMultiResponse.withPlainInternalServerError(
+                      messages.getMessage(lang, MessageConsts.InternalServerError))));      
     }
   }
 }

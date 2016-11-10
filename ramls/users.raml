@@ -51,6 +51,7 @@ resourceTypes:
       description: Get a single user
   /multi:
     post:
+      is: [language]
       description: Upload several <<resourcePathName|!singularize>> items.
       body:
           application/json:
