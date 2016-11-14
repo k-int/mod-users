@@ -49,21 +49,21 @@ resourceTypes:
         schema: userdata
     get:
       description: Get a single user
-  /multi:
-    post:
-      is: [language]
-      description: Upload several <<resourcePathName|!singularize>> items.
-      body:
+/users-multi:
+  post:
+    is: [language]
+    description: Upload several <<resourcePathName|!singularize>> items.
+    body:
+        application/json:
+          schema: userdataMultiple
+    responses:
+      201:
+        body:
           application/json:
-            schema: userdataMultiple
-      responses:
-        201:
-          body:
-            application/json:
-              schema: userdataMultipleSummary
-        400:
-          body:
-            text/plain:
-        500:
-          body:
-            text/plain:
+            schema: userdataMultipleSummary
+      400:
+        body:
+          text/plain:
+      500:
+        body:
+          text/plain:
