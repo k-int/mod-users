@@ -93,8 +93,10 @@ public class UsersMultiAPI implements UsersMultiResource {
   }
 
   @Override
-  public void getUsersMulti(Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) throws Exception {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  public void getUsersMulti(String lang, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) throws Exception {
+    asyncResultHandler.handle(Future.succeededFuture(
+             PostUsersMultiResponse.withPlainInternalServerError(
+                     messages.getMessage(lang, MessageConsts.InternalServerError))));
   }
   
 }
