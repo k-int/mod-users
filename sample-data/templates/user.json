@@ -1,0 +1,11 @@
+{
+  "id": "",
+  "username": "",
+  "barcode": "",
+  "active": "true",
+  "personal": {
+    "lastName": "",
+    "firstName": "",
+    "middleName": ""
+  }
+}

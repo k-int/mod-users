@@ -9,3 +9,7 @@ nbproject/
 .project
 .settings/
 .classpath
+src/main/resources/*.raml
+
+#node
+node_modules/

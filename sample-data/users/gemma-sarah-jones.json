@@ -1,0 +1,11 @@
+{
+  "id": "9a6ed769-15b4-4555-bbe1-2987c1e6e014",
+  "username": "joness",
+  "barcode": "610328563954",
+  "active": "true",
+  "personal": {
+    "lastName": "Jones",
+    "firstName": "Gemma",
+    "middleName": "Sarah"
+  }
+}
